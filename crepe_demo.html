@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+  <title>CREPE Interactive Demo</title>
+  <link rel="stylesheet" href="crepe.css">
+</head>
+<body>
+  <div id="container">
+    <canvas id="canvas" width="960" height="360"></canvas>
+    <div id="output">
+      Status: <span id="status"><a href="javascript:crepe.resume();" style="color:red;">* Click here to start the demo *</a></span><br>
+      Estimated Pitch: <span id="estimated-pitch"></span><br>
+      Voicing Confidence: <span id="voicing-confidence"></span>
+      Sampling Rate: <span id="srate">48000</span>
+    </div>
+    <script src="tfjs-0.8.0.min.js"></script>
+    <script src="crepe.js"></script>
+  </div>
+</body>
+</html>
