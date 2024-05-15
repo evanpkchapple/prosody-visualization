@@ -17,7 +17,6 @@ class MediaPlayer {
     this.downloadButtonSvg = '<svg class="icon icon-download"><use xlink:href="#icon-download"></use></svg>';
     this.starButtonSvg = '<svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>';
   }
-
   render(options) {
     if (options) {
       this.extend(options);
@@ -45,9 +44,12 @@ class MediaPlayer {
     if (this.player.controls) {
       this.player.controls = false;
     }
-    this.player.src = this.list.files[this.currentFileIndex].url;
+    this.currentFile = this.list.files[this.currentFileIndex];
+    console.log("currentFile", this.currentFile);
+    this.player.src = this.list.files[this.currentFileIndex].audio_url;
     this.filename = this.list.files[this.currentFileIndex].filename;
     this.sentence = this.list.files[this.currentFileIndex].labels.filter(word => word !== '#').join(' ');
+    displayTextGrid(this.currentFile);
     console.log("sentence", this.sentence);
     this.player.load();
   }
