@@ -1,227 +1,214 @@
-crepe = (function() {
-  //Global vars
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  var minPitch = 50;
-  var maxPitch = 500;
-  var canvasHeight = canvas.height;
-  var canvasWidth = canvas.width;
-  const stepSize = getStepSize(minPitch, maxPitch, canvasHeight);
-    
-  function error(message) {
-    document.getElementById('status').innerHTML = 'Error: ' + message;
-    return message;
-  }
-
-  function status(message) {
-    document.getElementById('status').innerHTML = message;
-  }
-
-  function getStepSize(minPitch, maxPitch, numBins) {
-    const totalRange = maxPitch - minPitch;
-    const minIndex = 0;
-    const maxIndex = Math.ceil((maxPitch - 50) / totalRange * numBins);
-    return { minIndex, maxIndex };
-  }
-
-  const updateFrame = (function() {
-    const buffer = ctx.createImageData(canvas.width, canvas.height);
-    var column = 0;
-
-    return function(predicted_hz) {
-      for (var i = minIndex; i <= maxIndex; i++) {
-        let value = Math.floor(predicted_hz);
-        if (isNaN(value) || value < 0) value = 0;
-        if (value > 255) value = 255;
-        console.log(value);
-        
-        const index = ((canvasHeight - 1 - (i - minIndex)) * canvasWidth + column) * 4;
-        
-        if (index >= 0 && index < buffer.data.length) {
-          buffer.data.set(newColorMap[value], index);
-        } else {
-          console.error(`Index out of bounds: ${index}, buffer length: ${buffer.data.length}`);
-        }
-      }
-
-      column = (column + 1) % canvas.width;
-      ctx.putImageData(buffer, canvas.width - column, 0);
-      ctx.putImageData(buffer, -column, 0);
-    };
-  })();
-    
-  // a function that accepts the activation vector for each frame
-  const updateActivation = (function() {
-    // Define the new color map
-    const newColorMap = [];
-    for (let i = 0; i <= 127; i++) {
-      newColorMap.push([255, 255, 255, 255]); // white for values 0-5
-    }
-    for (let i = 128; i < 256; i++) {
-      newColorMap.push([0, 0, 139, 255]); // dark blue for values > 5
-    }
-
-    // Convert each color to Uint8ClampedArray
-    for (var i = 0; i < newColorMap.length; i++) {
-      array = new Uint8ClampedArray(4);
-      array.set(newColorMap[i]);
-      newColorMap[i] = array;
-    }
-
-    const canvas = document.getElementById('activation');
+const crepe = (function() {
+    // Global vars
+    const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const buffer = ctx.createImageData(canvas.width, canvas.height);
+    const minPitch = 50;
+    const maxPitch = 300;
+    const canvasHeight = canvas.height;
+    const canvasWidth = canvas.width;
+    var duration = 5000;
+    const callFrequency = 12; // A new frame is called callFrequency times every second
+    const columnWidth = calculateColumnWidth();
     var column = 0;
+    const minConfidence = 0.3;
+    var tfInitialized = false;
 
-    const { minIndex, maxIndex } = calculatePitchIndices(50, 300, 360);
+    function error(message) {
+        document.getElementById('status').innerHTML = 'Error: ' + message;
+        return message;
+    }
 
-    return function(activation) {
-      // render
-      for (var i = minIndex; i <= maxIndex; i++) {
-        let value = Math.floor(activation[i] * 256.0);
-        if (isNaN(value) || value < 0) value = 0;
-        if (value > 255) value = 255;
-        console.log(value);
-        
-        const index = ((canvas.height - 1 - (i - minIndex)) * canvas.width + column) * 4;
-        
-        if (index >= 0 && index < buffer.data.length) {
-          buffer.data.set(newColorMap[value], index);
-        } else {
-          console.error(`Index out of bounds: ${index}, buffer length: ${buffer.data.length}`);
+    function status(message) {
+        document.getElementById('status').innerHTML = message;
+    }
+
+    function stopDetection() {
+        if (audioContext) {
+            audioContext.close();
+            audioContext = null;
         }
-      }
-
-      column = (column + 1) % canvas.width;
-      ctx.putImageData(buffer, canvas.width - column, 0);
-      ctx.putImageData(buffer, -column, 0);
-    };
-  })();
-
-  var audioContext;
-  var running = false;
-
-  try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioContext = new AudioContext();
-    document.getElementById('srate').innerHTML = audioContext.sampleRate;
-  } catch (e) {
-    error('Could not instantiate AudioContext: ' + e.message);
-    throw e;
-  }
-
-  function resample(audioBuffer, onComplete) {
-    const interpolate = (audioBuffer.sampleRate % 16000 != 0);
-    const multiplier = audioBuffer.sampleRate / 16000;
-    const original = audioBuffer.getChannelData(0);
-    const subsamples = new Float32Array(1024);
-    for (var i = 0; i < 1024; i++) {
-      if (!interpolate) {
-        subsamples[i] = original[i * multiplier];
-      } else {
-        var left = Math.floor(i * multiplier);
-        var right = left + 1;
-        var p = i * multiplier - left;
-        subsamples[i] = (1 - p) * original[left] + p * original[right];
-      }
+        running = false;
+        status('<a id="restartButton" href="javascript:crepe.resume();">* Click here to restart listening *</a>');
     }
-    onComplete(subsamples);
-  }
 
-  const cent_mapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191))
-
-  function process_microphone_buffer(event) {
-    resample(event.inputBuffer, function(resampled) {
-      tf.tidy(() => {
-        running = true;
-
-        const frame = tf.tensor(resampled.slice(0, 1024));
-        const zeromean = tf.sub(frame, tf.mean(frame));
-        const framestd = tf.tensor(tf.norm(zeromean).dataSync() / Math.sqrt(1024));
-        const normalized = tf.div(zeromean, framestd);
-        const input = normalized.reshape([1, 1024]);
-        const activation = model.predict([input]).reshape([360]);
-
-        const confidence = activation.max().dataSync()[0];
-        const center = activation.argMax().dataSync()[0];
-        document.getElementById('voicing-confidence').innerHTML = confidence.toFixed(3);
-
-        const start = Math.max(0, center - 4);
-        const end = Math.min(360, center + 5);
-        const weights = activation.slice([start], [end - start]);
-        const cents = cent_mapping.slice([start], [end - start]);
-
-        const products = tf.mul(weights, cents);
-        const productSum = products.dataSync().reduce((a, b) => a + b, 0);
-        const weightSum = weights.dataSync().reduce((a, b) => a + b, 0);
-        const predicted_cent = productSum / weightSum;
-        const predicted_hz = 10 * Math.pow(2, predicted_cent / 1200.0);
-
-        var result = (confidence > 0.5) ? predicted_hz.toFixed(3) + ' Hz' : '&nbsp;no voice&nbsp&nbsp;';
-        var strlen = result.length;
-        for (var i = 0; i < 11 - strlen; i++) result = "&nbsp;" + result;
-        document.getElementById('estimated-pitch').innerHTML = result;
-        console.log(predicted_hz);
-        updateFrame(predicted_hz);
-      });
-    });
-  }
-
-  function initAudio() {
-    if (!navigator.getUserMedia) {
-      if (navigator.mediaDevices) {
-        navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
-      } else {
-        navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-      }
+    function getPixels(pitch) {
+        var pixel = Math.floor(((pitch - minPitch) / maxPitch) * canvasHeight);
+        return pixel;
     }
-    if (navigator.getUserMedia) {
-      status('Initializing audio...')
-      navigator.getUserMedia({ audio: true }, function(stream) {
-        status('Setting up AudioContext ...');
-        const mic = audioContext.createMediaStreamSource(stream);
 
-        const minBufferSize = audioContext.sampleRate / 16000 * 1024;
-        for (var bufferSize = 4; bufferSize < minBufferSize; bufferSize *= 2);
-        const scriptNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
-        scriptNode.onaudioprocess = process_microphone_buffer;
+    function calculateColumnWidth() {
+        var columnWidth = canvasWidth / ((duration / 1000) * callFrequency);
+        return columnWidth;
+    }
 
-        const gain = audioContext.createGain();
-        gain.gain.setValueAtTime(0, audioContext.currentTime);
+    const updateFrame = (function() {
+        const buffer = ctx.createImageData(canvasWidth, canvasHeight);
 
-        mic.connect(scriptNode);
-        scriptNode.connect(gain);
-        gain.connect(audioContext.destination);
+        return function(predicted_hz) {
+            for (var j = 0; j < columnWidth; j++) {
+                for (var i = 0; i <= canvasHeight; i++) {
+                    let value = getPixels(predicted_hz);
 
-        if (audioContext.state === 'running') {
-          status('Running ...');
-        } else {
-          status('<a href="javascript:crepe.resume();" style="color:red;">* Click here to start the demo *</a>')
+                    const index = ((canvasHeight - 1 - (i)) * canvasWidth + column) * 4;
+
+                    if (i === value || i === value - 1 || i === value + 1) {
+                        buffer.data[index] = 0;
+                        buffer.data[index + 1] = 0;
+                        buffer.data[index + 2] = 255;
+                        buffer.data[index + 3] = 255;
+                    } else {
+                        buffer.data[index] = 255;
+                        buffer.data[index + 1] = 255;
+                        buffer.data[index + 2] = 255;
+                        buffer.data[index + 3] = 255;
+                    }
+                }
+                column++;
+                if (column >= canvasWidth) {
+                    stopDetection();
+                }
+            }
+            ctx.putImageData(buffer, 0, 0);
+        };
+    })();
+
+    var audioContext;
+    var running = false;
+    var stream;
+    var scriptNode;
+
+    function initAudioContext() {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContext();
+        } catch (e) {
+            error('Could not instantiate AudioContext: ' + e.message);
+            throw e;
         }
-      }, function(message) {
-        error('Could not access microphone - ' + message);
-      });
-    } else error('Could not access microphone - getUserMedia not available');
-  }
-
-  async function initTF() {
-    try {
-      status('Loading Keras model...');
-      window.model = await tf.loadModel('model/model.json');
-      status('Model loading complete');
-    } catch (e) {
-      throw error(e);
     }
-    initAudio();
-  }
 
-  initTF();
-
-  return {
-    'audioContext': audioContext,
-    'resume': function() {
-      audioContext.resume();
-      status('Running ...');
+    function resample(audioBuffer, onComplete) {
+        const interpolate = (audioBuffer.sampleRate % 16000 != 0);
+        const multiplier = audioBuffer.sampleRate / 16000;
+        const original = audioBuffer.getChannelData(0);
+        const subsamples = new Float32Array(1024);
+        for (var i = 0; i < 1024; i++) {
+            if (!interpolate) {
+                subsamples[i] = original[i * multiplier];
+            } else {
+                var left = Math.floor(i * multiplier);
+                var right = left + 1;
+                var p = i * multiplier - left;
+                subsamples[i] = (1 - p) * original[left] + p * original[right];
+            }
+        }
+        onComplete(subsamples);
     }
-  }
+
+    const cent_mapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191));
+
+    function process_microphone_buffer(event) {
+        if (!running) return;
+        resample(event.inputBuffer, function(resampled) {
+            tf.tidy(() => {
+                const frame = tf.tensor(resampled.slice(0, 1024));
+                const zeromean = tf.sub(frame, tf.mean(frame));
+                const framestd = tf.tensor(tf.norm(zeromean).dataSync() / Math.sqrt(1024));
+                const normalized = tf.div(zeromean, framestd);
+                const input = normalized.reshape([1, 1024]);
+                const activation = model.predict([input]).reshape([360]);
+
+                const confidence = activation.max().dataSync()[0];
+                const center = activation.argMax().dataSync()[0];
+
+                const start = Math.max(0, center - 4);
+                const end = Math.min(360, center + 5);
+                const weights = activation.slice([start], [end - start]);
+                const cents = cent_mapping.slice([start], [end - start]);
+
+                const products = tf.mul(weights, cents);
+                const productSum = products.dataSync().reduce((a, b) => a + b, 0);
+                const weightSum = weights.dataSync().reduce((a, b) => a + b, 0);
+                const predicted_cent = productSum / weightSum;
+                var predicted_hz = 10 * Math.pow(2, predicted_cent / 1200.0);
+
+                predicted_hz = confidence > minConfidence ? predicted_hz : 0;
+
+                updateFrame(predicted_hz);
+            });
+        });
+    }
+
+    function initAudio() {
+        if (!navigator.getUserMedia) {
+            if (navigator.mediaDevices) {
+                navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
+            } else {
+                navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+            }
+        }
+        if (navigator.getUserMedia) {
+            status('Initializing audio...');
+            navigator.getUserMedia({ audio: true }, function(newStream) {
+                stream = newStream;
+                if (!audioContext) {
+                    initAudioContext();
+                }
+                status('Setting up AudioContext ...');
+                const mic = audioContext.createMediaStreamSource(stream);
+
+                const minBufferSize = audioContext.sampleRate / 16000 * 1024;
+                for (var bufferSize = 4; bufferSize < minBufferSize; bufferSize *= 2);
+                scriptNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+                scriptNode.onaudioprocess = process_microphone_buffer;
+
+                const gain = audioContext.createGain();
+                gain.gain.setValueAtTime(0, audioContext.currentTime);
+
+                mic.connect(scriptNode);
+                scriptNode.connect(gain);
+                gain.connect(audioContext.destination);
+
+                if (audioContext.state === 'running') {
+                    status('Running ...');
+                    running = true;
+                } else {
+                    status('<a id="restartButton" href="javascript:crepe.resume();">* Click here to start listening *</a>');
+                }
+            }, function(message) {
+                error('Could not access microphone - ' + message);
+            });
+        } else error('Could not access microphone - getUserMedia not available');
+    }
+
+    async function initTF() {
+        if (!tfInitialized) {
+            try {
+                status('Loading Keras model...');
+                window.model = await tf.loadModel('model/model.json');
+                status('Model loading complete');
+                tfInitialized = true;
+            } catch (e) {
+                throw error(e);
+            }
+        }
+        initAudio();
+    }
+
+    return {
+        'audioContext': audioContext,
+        'resume': function() {
+            column = 0;
+            if (!audioContext) {
+                initAudioContext();
+            }
+            audioContext.resume().then(() => {
+                status('Running ...');
+                initTF();
+                running = true;
+            }).catch(e => {
+                error('Error resuming audio context: ' + e.message);
+            });
+        }
+    }
 })();
