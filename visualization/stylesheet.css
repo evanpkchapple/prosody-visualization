@@ -21,8 +21,48 @@ body {
 }
 
 #audio-player {
-  width: 100%;
+  width: 50%;
   max-width: 500px;
+}
+
+canvas {
+  width: 100%;
+  border: 1px solid black;
+}
+
+#output {
+  font-family: Arial, sans-serif;
+  margin-top: 10px;
+}
+
+
+#crepes_audio {
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: auto;
+}
+
+#restartButton {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #ffffff;
+  background-color: #808080;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#restartButton:hover {
+  background-color: #505050;
+  color: #ffffff;
 }
 
 #audio-visualizer {
@@ -37,7 +77,7 @@ body {
   justify-content: center;
 }
 
-.container {
+.audiobar_container {
   width: 100%;
 }
 

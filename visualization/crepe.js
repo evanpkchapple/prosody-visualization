@@ -81,6 +81,7 @@ const crepe = (function() {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
+            console.log("audioContext", audioContext);
         } catch (e) {
             error('Could not instantiate AudioContext: ' + e.message);
             throw e;
@@ -149,8 +150,9 @@ const crepe = (function() {
         }
         if (navigator.getUserMedia) {
             status('Initializing audio...');
-            navigator.getUserMedia({ audio: true }, function(newStream) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(function(newStream) {
                 stream = newStream;
+                console.log("audioContext", audioContext);
                 if (!audioContext) {
                     initAudioContext();
                 }
@@ -185,7 +187,7 @@ const crepe = (function() {
         if (!tfInitialized) {
             try {
                 status('Loading Keras model...');
-                window.model = await tf.loadModel('model/model.json');
+                window.model = await tf.loadModel('../model/model.json');
                 status('Model loading complete');
                 tfInitialized = true;
             } catch (e) {
