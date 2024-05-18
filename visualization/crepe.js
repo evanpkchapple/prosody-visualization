@@ -28,11 +28,12 @@ const crepe = (function() {
             audioContext = null;
         }
         running = false;
-        status('<a id="restartButton" href="javascript:crepe.resume();">* Click here to restart listening *</a>');
+        status('<a id="start_listening" href="javascript:crepe.resume();">Start listening</a>');
     }
 
     function getPixels(pitch) {
         var pixel = Math.floor(((pitch - minPitch) / maxPitch) * canvasHeight);
+        console.log("pixel", pixel);
         return pixel;
     }
 
@@ -81,7 +82,6 @@ const crepe = (function() {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContext();
-            console.log("audioContext", audioContext);
         } catch (e) {
             error('Could not instantiate AudioContext: ' + e.message);
             throw e;
@@ -152,7 +152,6 @@ const crepe = (function() {
             status('Initializing audio...');
             navigator.mediaDevices.getUserMedia({ audio: true }).then(function(newStream) {
                 stream = newStream;
-                console.log("audioContext", audioContext);
                 if (!audioContext) {
                     initAudioContext();
                 }
@@ -175,7 +174,7 @@ const crepe = (function() {
                     status('Running ...');
                     running = true;
                 } else {
-                    status('<a id="restartButton" href="javascript:crepe.resume();">* Click here to start listening *</a>');
+                    status('<a id="start_listening" href="javascript:crepe.resume();">Start listening</a>');
                 }
             }, function(message) {
                 error('Could not access microphone - ' + message);

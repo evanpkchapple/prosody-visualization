@@ -19,7 +19,6 @@ function createSegments(intervals, pitches, pitchIntervals) {
     const displayHeight = 200; // Increased height to accommodate pitch plots
 
     canvas.width = displayWidth;
-    canvas.height = displayHeight;
     canvas.style.width = `${displayWidth}px`;
     canvas.style.height = `${displayHeight}px`;
 
@@ -56,7 +55,7 @@ function createSegments(intervals, pitches, pitchIntervals) {
 
             ctx.beginPath();
             ctx.arc(xPosition, yPosition, 4, 0, 2 * Math.PI);
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = '#212AFBFF';
             ctx.fill();
         }
     });

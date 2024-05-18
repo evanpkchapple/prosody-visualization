@@ -6,15 +6,15 @@
     <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
+    <h1 class="heading">Fundamental Frequency Movement Recognition for French Language</h1>
     <div id="audio-visualizer">
         <div id="intervalsContainer"></div>
     </div>
-    <div id="crepes_audio">
       <div id="crepes">
-        <canvas id="canvas" width="960" height="360"></canvas>
         <div id="output">
-          Status: <span id="status"><a id="restartButton" href="javascript:crepe.resume();">* Click here to start listening *</a></span><br>
+          Status: <span id="status"><a href="javascript:crepe.resume();" id="start_listening">Start listening</a></span>
         </div>
+        <canvas id="canvas"></canvas>
       </div>
       <div id="audio-player">
           <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -61,7 +61,6 @@
               </audio>
             </div>
       </div>
-    </div>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="tfjs-0.8.0.min.js"></script>
 
