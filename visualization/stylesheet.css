@@ -1,8 +1,7 @@
 body {
   font-family: 'Arial';
   font-weight: 600;
-  width: 100vw;
-  height: 100vh;
+  padding: 2%;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -21,8 +20,72 @@ body {
 }
 
 #audio-player {
-  width: 100%;
+  width: 50%;
   max-width: 500px;
+}
+
+#start_listening{
+  background: #ffffff;
+	color: #5F7A76;
+	padding: 4px 8px;
+	position: relative;
+	border: 2px #5F7A76 solid;
+}
+
+#start_listening:hover{
+	color: #ffffff;
+	background: #5F7A76;
+	transition: 0.25s;
+	top: 4px;
+	left: 4px;
+	border: 2px #5F7A76 solid;
+}
+
+#start_listening::after{
+	content: "";
+	position: absolute;
+	top: 4px;
+	left: 4px;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	border: 2px #ffffff solid;
+}
+
+#start_listening:hover::after{
+	content: "";
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	border: 2px #ffffff solid;
+}
+
+.heading {
+  text-align: center;
+  color: #5F7A76;
+  font-size: 32px;
+  font-family: 'Amaranth', sans-serif;
+}
+
+canvas {
+  width: 100%;
+  border: 1px solid #5F7A76;
+  height: 200px;
+  border-radius: 10px;
+}
+
+#output {
+  font-family: Arial, sans-serif;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+#crepes {
+  width: 100%;
+  color: #5F7A76;
 }
 
 #audio-visualizer {
@@ -37,7 +100,7 @@ body {
   justify-content: center;
 }
 
-.container {
+.audiobar_container {
   width: 100%;
 }
 
