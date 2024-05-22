@@ -1,0 +1,74 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 4.714
+tiers? <exists>
+size = 1
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "Words"
+		xmin = 0
+		xmax = 4.714
+		intervals: size = 15
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.25
+				text = "#"
+			intervals [2]:
+				xmin = 0.25
+				xmax = 0.41
+				text = "Je"
+			intervals [3]:
+				xmin = 0.41
+				xmax = 0.54
+				text = "ne"
+			intervals [4]:
+				xmin = 0.54
+				xmax = 0.71
+				text = "peux"
+			intervals [5]:
+				xmin = 0.71
+				xmax = 0.93
+				text = "pas"
+			intervals [6]:
+				xmin = 0.93
+				xmax = 1.02
+				text = "y"
+			intervals [7]:
+				xmin = 1.02
+				xmax = 1.42
+				text = "croire,"
+			intervals [8]:
+				xmin = 1.42
+				xmax = 2.382520000000004
+				text = "#"
+			intervals [9]:
+				xmin = 2.382520000000004
+				xmax = 2.6730599999999978
+				text = "c'est"
+			intervals [10]:
+				xmin = 2.6730599999999978
+				xmax = 2.99
+				text = "trop"
+			intervals [11]:
+				xmin = 2.99
+				xmax = 3.27
+				text = "beau"
+			intervals [12]:
+				xmin = 3.27
+				xmax = 3.56
+				text = "pour"
+			intervals [13]:
+				xmin = 3.56
+				xmax = 4.034259999999994
+				text = "être"
+			intervals [14]:
+				xmin = 4.034259999999994
+				xmax = 4.464799999999989
+				text = "vrai."
+			intervals [15]:
+				xmin = 4.464799999999989
+				xmax = 4.714
+				text = "#"

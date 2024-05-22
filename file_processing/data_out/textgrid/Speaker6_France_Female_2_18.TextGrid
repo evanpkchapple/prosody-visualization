@@ -1,0 +1,82 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 4.706
+tiers? <exists>
+size = 1
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "Words"
+		xmin = 0
+		xmax = 4.706
+		intervals: size = 17
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.2505999999999913
+				text = "#"
+			intervals [2]:
+				xmin = 0.2505999999999913
+				xmax = 0.374
+				text = "Je"
+			intervals [3]:
+				xmin = 0.374
+				xmax = 0.474
+				text = "ne"
+			intervals [4]:
+				xmin = 0.474
+				xmax = 0.674
+				text = "parle"
+			intervals [5]:
+				xmin = 0.674
+				xmax = 0.834
+				text = "pas"
+			intervals [6]:
+				xmin = 0.834
+				xmax = 1.074
+				text = "beaucoup"
+			intervals [7]:
+				xmin = 1.074
+				xmax = 1.104
+				text = "#"
+			intervals [8]:
+				xmin = 1.104
+				xmax = 1.50887000000001
+				text = "français."
+			intervals [9]:
+				xmin = 1.50887000000001
+				xmax = 3.1402899999999936
+				text = ""
+			intervals [10]:
+				xmin = 3.1402899999999936
+				xmax = 3.2615100000000092
+				text = "Le"
+			intervals [11]:
+				xmin = 3.2615100000000092
+				xmax = 3.267179999999993
+				text = ""
+			intervals [12]:
+				xmin = 3.267179999999993
+				xmax = 3.544
+				text = "centre"
+			intervals [13]:
+				xmin = 3.544
+				xmax = 4.014
+				text = "commercial"
+			intervals [14]:
+				xmin = 4.014
+				xmax = 4.074
+				text = "est"
+			intervals [15]:
+				xmin = 4.074
+				xmax = 4.274
+				text = "tout"
+			intervals [16]:
+				xmin = 4.274
+				xmax = 4.456880000000004
+				text = "droit."
+			intervals [17]:
+				xmin = 4.456880000000004
+				xmax = 4.706
+				text = "#"

@@ -1,0 +1,86 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 3.598
+tiers? <exists>
+size = 1
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "Words"
+		xmin = 0
+		xmax = 3.598
+		intervals: size = 18
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.25
+				text = "#"
+			intervals [2]:
+				xmin = 0.25
+				xmax = 0.3916700000000128
+				text = "Quand"
+			intervals [3]:
+				xmin = 0.3916700000000128
+				xmax = 0.5268000000000029
+				text = "j'ai"
+			intervals [4]:
+				xmin = 0.5268000000000029
+				xmax = 0.68
+				text = "vu"
+			intervals [5]:
+				xmin = 0.68
+				xmax = 0.78
+				text = "la"
+			intervals [6]:
+				xmin = 0.78
+				xmax = 0.99
+				text = "Tour"
+			intervals [7]:
+				xmin = 0.99
+				xmax = 1.31
+				text = "Eiffel"
+			intervals [8]:
+				xmin = 1.31
+				xmax = 1.52
+				text = "pour"
+			intervals [9]:
+				xmin = 1.52
+				xmax = 1.61
+				text = "la"
+			intervals [10]:
+				xmin = 1.61
+				xmax = 1.97
+				text = "première"
+			intervals [11]:
+				xmin = 1.97
+				xmax = 2.02
+				text = "#"
+			intervals [12]:
+				xmin = 2.02
+				xmax = 2.23
+				text = "fois,"
+			intervals [13]:
+				xmin = 2.23
+				xmax = 2.44
+				text = "#"
+			intervals [14]:
+				xmin = 2.44
+				xmax = 2.74
+				text = "j'étais"
+			intervals [15]:
+				xmin = 2.74
+				xmax = 2.98
+				text = "sans"
+			intervals [16]:
+				xmin = 2.98
+				xmax = 3.13
+				text = "#"
+			intervals [17]:
+				xmin = 3.13
+				xmax = 3.34825
+				text = "voix."
+			intervals [18]:
+				xmin = 3.34825
+				xmax = 3.598
+				text = "#"

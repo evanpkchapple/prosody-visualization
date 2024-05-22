@@ -1,0 +1,118 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 10.813
+tiers? <exists>
+size = 1
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "Words"
+		xmin = 0
+		xmax = 10.813
+		intervals: size = 26
+			intervals [1]:
+				xmin = 0.0
+				xmax = 0.25
+				text = "#"
+			intervals [2]:
+				xmin = 0.25
+				xmax = 0.31
+				text = "Je"
+			intervals [3]:
+				xmin = 0.31
+				xmax = 0.55
+				text = "parle"
+			intervals [4]:
+				xmin = 0.55
+				xmax = 0.67
+				text = "#"
+			intervals [5]:
+				xmin = 0.67
+				xmax = 0.98
+				text = "anglais,"
+			intervals [6]:
+				xmin = 0.98
+				xmax = 1.14
+				text = "#"
+			intervals [7]:
+				xmin = 1.14
+				xmax = 1.52
+				text = "grec"
+			intervals [8]:
+				xmin = 1.52
+				xmax = 1.65
+				text = "#"
+			intervals [9]:
+				xmin = 1.65
+				xmax = 1.68
+				text = "et"
+			intervals [10]:
+				xmin = 1.68
+				xmax = 1.78
+				text = "un"
+			intervals [11]:
+				xmin = 1.78
+				xmax = 1.91
+				text = "peu"
+			intervals [12]:
+				xmin = 1.91
+				xmax = 2.22
+				text = "français."
+			intervals [13]:
+				xmin = 2.22
+				xmax = 8.95139
+				text = ""
+			intervals [14]:
+				xmin = 8.95139
+				xmax = 9.049659999999996
+				text = "Je"
+			intervals [15]:
+				xmin = 9.049659999999996
+				xmax = 9.059489999999998
+				text = ""
+			intervals [16]:
+				xmin = 9.059489999999998
+				xmax = 9.2
+				text = "vais"
+			intervals [17]:
+				xmin = 9.2
+				xmax = 9.42
+				text = "faire"
+			intervals [18]:
+				xmin = 9.42
+				xmax = 9.52
+				text = "les"
+			intervals [19]:
+				xmin = 9.52
+				xmax = 9.61
+				text = "#"
+			intervals [20]:
+				xmin = 9.61
+				xmax = 9.9
+				text = "courses"
+			intervals [21]:
+				xmin = 9.9
+				xmax = 9.98
+				text = "#"
+			intervals [22]:
+				xmin = 9.98
+				xmax = 10.16
+				text = "si"
+			intervals [23]:
+				xmin = 10.16
+				xmax = 10.31
+				text = "j'ai"
+			intervals [24]:
+				xmin = 10.31
+				xmax = 10.34
+				text = "le"
+			intervals [25]:
+				xmin = 10.34
+				xmax = 10.56368
+				text = "temps."
+			intervals [26]:
+				xmin = 10.56368
+				xmax = 10.813
+				text = "#"
